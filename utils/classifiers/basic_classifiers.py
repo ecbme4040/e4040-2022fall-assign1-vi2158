@@ -89,6 +89,15 @@ class BasicClassifier:
             #                     START OF YOUR CODE                               #
             ########################################################################
 
+            for i in range((num_train-1)//batch_size + 1):
+                
+                initial = i*batch_size
+                final = initial + batch_size
+                X_batch = X[initial:final]
+                y_batch = y[initial:final]
+
+                
+
             # raise NotImplementedError
             ########################################################################
             #                       END OF YOUR CODE                               #
@@ -103,7 +112,11 @@ class BasicClassifier:
             ########################################################################
             #                     START OF YOUR CODE                               #
             ########################################################################
-
+            
+            loss, dw = self.loss(X_batch, y_batch, reg)
+            self.W -= learning_rate*dw
+            loss_history.append(loss)
+            
             # raise NotImplementedError
             ########################################################################
             #                    END OF YOUR CODE                                  #
@@ -172,6 +185,9 @@ class LogisticRegression(BasicClassifier):
         ########################################################################
         #                     START OF YOUR CODE                               #
         ########################################################################
+        z = sigmoid(np.matmul(X, self.W))
+        
+        y_pred = np.array([1 if i > 0.5 else 0 for i in z])
 
         # raise NotImplementedError
         ########################################################################
@@ -202,7 +218,9 @@ class Softmax(BasicClassifier):
         ########################################################################
         #                     START OF YOUR CODE                               #
         ########################################################################
-
+        from .softmax import softmax
+        
+        y_pred = softmax(np.matmul(X, self.W))
         # raise NotImplementedError
         ########################################################################
         #                    END OF YOUR CODE                                  #

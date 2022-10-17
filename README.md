@@ -4,6 +4,26 @@ The assignment is distributed as several jupyter notebooks and a number of direc
 # Students need to follow the instructions below, and they also need to edit the README.md such that key information is shown in it - right after this line
 TODO students to add text summarizing the key (high level) modifications that they did to solve the assignment
 
+# Summary
+
+Task 1
+    - Changed the bias dimensions of ones in the X data
+    - Implemented logistic regressions through naive method and vectorized method
+    - Implemented Softmax classifier through naive method and vectorized method
+    - Implemented SGD by making changes to the basic_classifier.py file
+
+Task 2
+    - Implemented affine, ReLU and Softmax
+    - Implemented two Layer network
+
+Task 3 
+    - Multilayer perceptron implementation using tensorflow and keras
+    - t-SNE method
+
+Task 4
+    - Question and Answers
+
+
 # Detailed instructions how to submit this assignment/homework:
 1. The assignment will be distributed as a github classroom assignment - as a special repository accessed through a link
 2. A students copy of the assignment gets created automatically with a special name - students have to rename the repo per instructions below
@@ -28,6 +48,10 @@ INSTRUCTIONS for naming the students' solution repository for assignments with m
 ```
 .
 ├── Assignment1_intro.ipynb
+├── Figures
+    ├── vi2158_gcp_work_example_screenshot_1.png
+    ├── vi2158_gcp_work_example_screenshot_2.png
+    ├── vi2158_gcp_work_example_screenshot_3.png
 ├── README.md
 ├── requirements.txt
 ├── task1-basic_classifiers.ipynb

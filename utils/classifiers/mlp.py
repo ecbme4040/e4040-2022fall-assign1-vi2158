@@ -53,7 +53,8 @@ class MLP:
         ############################################################################
         # TODO: Feedforward                                                        #
         ############################################################################
-
+        for layer in self.layers:
+            X = layer.feedforward(X)
         #raise NotImplementedError
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -84,7 +85,10 @@ class MLP:
         ############################################################################
         # TODO: Backpropogation                                                    #
         ############################################################################
-
+        loss, dx = softmax_loss(scores, labels)
+        for layer in list(reversed(self.layers)):
+            dx = layer.backward(dx)
+            
         #raise NotImplementedError
         ############################################################################
         # TODO: Add L2 regularization                                              #
@@ -97,12 +101,12 @@ class MLP:
 
         return loss
 
-    def step(self, learning_rate=1e-5, optim='SGD', momentum=0.0):
+    def step(self, learning_rate=1e-5, optim='SGD', momentum=0.):
         """
         Use SGD to implement a single-step update to each weight and bias.
         Set learning rate to 0.00001.
         """
-
+    
         # creates new lists with all parameters and gradients
         # naming rule l{i}_[W, b]: layer i, weights / bias
         params = {
@@ -123,7 +127,8 @@ class MLP:
         #     'lN_W': xxx, 'lN_b': xxx, 
         # }
         # grads likewise
-
+        velocities = self.velocities or \
+            {name: np.zeros_like(param) for name, param in params.items()}
         ############################################################################
         # TODO: Use SGD with momentum to update variables in layers                #
         # NOTE: Recall what we did for the TwoLayerNet                             #
@@ -131,7 +136,13 @@ class MLP:
         ############################################################################
         #                            START OF YOUR CODE                            #
         ############################################################################
+        for name, param in params.items():
+            velocities[name] = momentum*velocities.get(name) + learning_rate*grads.get(name)
+            param -= velocities.get(name)
 
+        # Update the parameters and the velocities
+        self.params = params
+        self.velocities = velocities
         #raise NotImplementedError
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -158,7 +169,12 @@ class MLP:
         ############################################################################
         #                             START OF YOUR CODE                           #
         ############################################################################
-
+        from .softmax import softmax
+        
+        X = self.forward(X)
+        
+        predictions = softmax(X)
+        predictions = np.argmax(predictions, axis=1)
         #raise NotImplementedError
         ############################################################################
         #                             END OF YOUR CODE                             #

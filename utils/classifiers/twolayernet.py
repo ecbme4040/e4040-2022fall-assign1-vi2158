@@ -51,7 +51,8 @@ class TwoLayerNet(object):
         # TODO: Feedforward                                                        #
         # NOTE: Use the methods defined for the layers in layer_utils.py           #
         ############################################################################
-
+        X = self.layer1.feedforward(X)
+        X = self.layer2.feedforward(X)
         #raise NotImplementedError
         ############################################################################
         #                          END OF YOUR CODE                                #
@@ -86,7 +87,9 @@ class TwoLayerNet(object):
         # mannually cache the parameters because it would be taken care of by the  #
         # functions in layer_utils.py                                              #
         ############################################################################
-
+        loss, dx = softmax_loss(scores, labels)
+        dx = self.layer2.backward(dx)
+        dx = self.layer1.backward(dx)
         #raise NotImplementedError
         ############################################################################
         #                          END OF YOUR CODE                                #
@@ -136,7 +139,8 @@ class TwoLayerNet(object):
         ############################################################################
         #                         START OF YOUR CODE                               #
         ############################################################################
-
+        for name, param in params.items():
+            param -= learning_rate*grads.get(name)
         #raise NotImplementedError
         ############################################################################
         #                          END OF YOUR CODE                                #
@@ -169,7 +173,10 @@ class TwoLayerNet(object):
         ############################################################################
         #                         START OF YOUR CODE                               #
         ############################################################################
-
+        fn = self.forward(X)
+        from .softmax import softmax
+        preds = softmax(fn)
+        preds = np.argmax(preds, axis=1)
         #raise NotImplementedError
         ############################################################################
         #                          END OF YOUR CODE                                #

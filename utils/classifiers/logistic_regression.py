@@ -53,13 +53,38 @@ def logistic_regression_loss_naive(w, X, y, reg):
     ############################################################################
     #                              START OF YOUR CODE                          #
     ############################################################################
+    y = y.astype(np.float64())
+    z = np.zeros_like(y)
+    for i in range(0,len(w)):
+        for j in range(0,len(X)):
+            z[j] += w[i]*X[j][i]    
+        
+    h = sigmoid(z.copy())
+    
+    l = np.zeros_like(y)
+    #for i in range(0,len(l)):
+    #    l[i] = -y[i]*(np.log(h[i])) - (1-y[i])*(np.log(1 - h[i]))
+        
+    l = -y*(np.log(h)) - (1-y)*(np.log(1-h))
+    
+    wL2 = np.sum(np.square(w))
+    loss2 = (reg/2)*wL2
+    loss = (np.sum(l)/len(l)) + loss2
+    
+    for i in range(0,len(dw)):
+        for j in range(0,len(X)):
+            dw[i] += (y[j] - h[j])*X[j][i]
+    
+    dw = (-1/len(y))*dw
+    dw += reg*w
+            
     
     #raise NotImplementedError
     ############################################################################
     #                               END OF YOUR CODE                           #
     ############################################################################
 
-    return loss, dw
+    return loss, dw, h
 
 
 def sigmoid(x):
@@ -82,7 +107,8 @@ def sigmoid(x):
     ############################################################################
     #                          START OF YOUR CODE                              #
     ############################################################################
-    
+ 
+    h = 1/(1 + np.exp(-x))
     #raise NotImplementedError
     ############################################################################
     #                          END OF YOUR CODE                                #
@@ -128,6 +154,15 @@ def logistic_regression_loss_vectorized(w, X, y, reg):
     ############################################################################
     #                          START OF YOUR CODE                              #
     ############################################################################
+    N = X.shape[0]
+    
+    fn = np.matmul(X, w)
+    
+    h = sigmoid(fn)
+    
+    loss = (-1/N)*np.sum(y * np.log(h) + (1 - y) * np.log(1 - h)) + (reg/2)*(np.linalg.norm(w))**2
+    
+    dw = (-1/N)*np.matmul((y - h), X) + reg*w
     
     #raise NotImplementedError
     ############################################################################

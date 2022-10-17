@@ -60,7 +60,7 @@ class AffineLayer:
         ############################################################################
         #                           START OF YOUR CODE                             #
         ############################################################################
-
+        out = affine_forward(X, W, b)
         #raise NotImplementedError
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -107,7 +107,9 @@ class AffineLayer:
         ############################################################################
         #                         START OF YOUR CODE                               #
         ############################################################################
-
+        dX, dW, db = affine_backward(dout, X, W, b)
+        self.gradients['W'] = dW
+        self.gradients['b'] = db
         #raise NotImplementedError
         ############################################################################
         #                          END OF YOUR CODE                                #
@@ -180,7 +182,9 @@ class DenseLayer(AffineLayer):
         #   NOTE: use super().f() to call a parent class function                  #
         # - cache intermediate affine result                                       #
         ############################################################################
-
+        self.cache['X'] = X
+        self.cache['A'] = super().feedforward(X)
+        out = self.activation_forward(self.cache['A'])
         #raise NotImplementedError
         ############################################################################
         # TODO: activation forward pass                                            #
@@ -221,14 +225,15 @@ class DenseLayer(AffineLayer):
         # - activation backward                                                    #
         #   remember to use functions in class                                     #
         ############################################################################
-
+        from .layer_funcs import relu_backward
+        dA = self.activation_backward(dout, A)
         #raise NotImplementedError
         ############################################################################
         # TODO:                                                                    #
         # - affine backward                                                        #
         #   remember to use parent class functions                                 #
         ############################################################################
-
+        dX = super().backward(dA)
         #raise NotImplementedError
         ############################################################################
         #                              END OF YOUR CODE                            #

@@ -48,7 +48,41 @@ def softmax_loss_naive(W, X, y, reg):
     ############################################################################
     #                     START OF YOUR CODE                                   #
     ############################################################################
+    N = X.shape[0]
+    K = W.shape[1]
+    M = X.shape[1]
+    norm_val = 0
+   
+    p = onehot(y, K)
 
+    z = [0]*N
+    for i in range(N):
+        for j in range(M):
+            z[i]+= X[i][j]*W[j]
+    
+    h = np.exp(z - np.max(z))
+    for i in range(len(z)):
+        h[i] /= np.sum(h[i])
+            
+    H = np.zeros((N,1))
+    h1 = -np.log(h).T
+    for i in range(N):
+        for j in range(K):
+            H[i] += p[i][j]*h1[j][i] 
+      
+    for i in range(M):
+        for j in range(K):
+            norm_val += W[i][j]**2
+            
+    loss = (1/N)*np.sum(H) + (reg/2)*norm_val
+    
+
+    diff = p-h
+    for i in range(M):
+        for j in range(N):
+            dW[i]+=X.T[i][j]*diff[j]
+    dW = (-1/N)*dW
+    dW += reg*W
     # raise NotImplementedError
     ############################################################################
     #                     END OF YOUR CODE                                     #
@@ -79,7 +113,10 @@ def softmax(x):
     ############################################################################
     #                     START OF YOUR CODE                                   #
     ############################################################################
-
+    h = np.exp(x - np.max(x))
+    
+    for i in range(len(x)):
+        h[i] /= np.sum(h[i])
     # raise NotImplementedError
     ############################################################################
     #                     END OF YOUR CODE                                     #
@@ -111,7 +148,9 @@ def onehot(x, K):
     ############################################################################
     #                     START OF YOUR CODE                                   #
     ############################################################################
-
+    
+    y[np.arange(N), x] = 1
+    
     # raise NotImplementedError
     ############################################################################
     #                     END OF YOUR CODE                                     #
@@ -142,7 +181,7 @@ def cross_entropy(p, q):
     ############################################################################
     #                     START OF YOUR CODE                                   #
     ############################################################################
-
+    h = -p*np.log(q)
     # raise NotImplementedError
     ############################################################################
     #                     END OF YOUR CODE                                     #
@@ -182,7 +221,20 @@ def softmax_loss_vectorized(W, X, y, reg):
     ############################################################################
     #                     START OF YOUR CODE                                   #
     ############################################################################
-
+    N = X.shape[0]
+    K = W.shape[1]
+    
+    p = onehot(y, K)
+    
+    fn = np.matmul(X, W)
+    
+    h = softmax(fn)
+    
+    H = cross_entropy(p, h)
+    
+    loss = (1/N)*np.sum(H) + (reg/2)*(np.linalg.norm(W))**2
+    
+    dW = (-1/N)*np.matmul(X.T, (p - h)) + reg*W
     # raise NotImplementedError
     ############################################################################
     #                     END OF YOUR CODE                                     #

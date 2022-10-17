@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from utils.features.pca import *
+from pca import *
 
 def pca_preprocess(X, K):
     """Data transformation step"""
